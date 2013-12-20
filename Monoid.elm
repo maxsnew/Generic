@@ -9,11 +9,7 @@ type Monoid m = { id : m
                 , op : m -> m -> m
                 }
 
-data Max = NInf
-         | Max Int
-
-data Min = PInf
-         | Min Int
+type Semigroup g = { op : g -> g -> g }
 
 -- | Monoidal Folds
 {-| Generalizes tons of common functions:
@@ -91,24 +87,6 @@ prodM = { id = 1
         , op = (*)
         }
 
-maxM : Monoid Max
-maxM = { id = NInf
-       , op m n = case m of
-         NInf -> n
-         Max m' -> case n of
-           NInf -> m
-           Max n' -> Max <| max m' n'
-       }
-
-minM : Monoid Min
-minM = { id = PInf
-       , op m n = case m of
-         PInf -> n
-         Min m' -> case n of
-           PInf -> m
-           Min n' -> Min <| min m' n'
-       }
-
 -- | Polymorphic
 transM : Monoid (a -> a)
 transM = { id = id
@@ -125,7 +103,19 @@ dictM = { id = Dict.empty
         , op = Dict.union
         }
 
+firstM : Monoid (Maybe a)
+firstM = semiM { op x y = x }
+
+lastM : Monoid (Maybe a)
+lastM = semiM { op x y = y }
+
 -- | Bounded Polymorphic
+maxM : Monoid (Maybe comparable)
+maxM = semiM { op = max }
+
+minM : Monoid (Maybe comparable)
+minM = semiM { op = min }
+
 setM : Monoid (Set.Set comparable)
 setM = { id = Set.empty
        , op = Set.union
@@ -141,3 +131,11 @@ sigM : Monoid a -> Monoid (Signal a)
 sigM m = { id   = constant m.id
          , op = \s1 s2 -> m.op <~ s1 ~ s2
          }
+
+semiM : Semigroup g -> Monoid (Maybe g)
+semiM g = { id = Nothing 
+          , op x y = case (x, y) of
+            (Nothing, _) -> y
+            (_, Nothing) -> x
+            (Just x', Just y') -> Just (g.op x' y')
+            }
