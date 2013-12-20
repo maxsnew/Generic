@@ -1,3 +1,5 @@
+module Monoid where
+
 import Dict
 import String
 import Set
@@ -6,6 +8,12 @@ import Set
 type Monoid m = { id : m
                 , op : m -> m -> m
                 }
+
+data Max = NInf
+         | Max Int
+
+data Min = PInf
+         | Min Int
 
 -- | Monoidal Folds
 {-| Generalizes tons of common functions:
@@ -82,6 +90,24 @@ prodM : Monoid number
 prodM = { id = 1
         , op = (*)
         }
+
+maxM : Monoid Max
+maxM = { id = NInf
+       , op m n = case m of
+         NInf -> n
+         Max m' -> case n of
+           NInf -> m
+           Max n' -> Max <| max m' n'
+       }
+
+minM : Monoid Min
+minM = { id = PInf
+       , op m n = case m of
+         PInf -> n
+         Min m' -> case n of
+           PInf -> m
+           Min n' -> Min <| min m' n'
+       }
 
 -- | Polymorphic
 transM : Monoid (a -> a)
