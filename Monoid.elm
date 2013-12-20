@@ -1,5 +1,7 @@
 module Monoid where
 
+import open Semigroup
+
 import Dict
 import String
 import Set
@@ -8,52 +10,6 @@ import Set
 type Monoid m = { id : m
                 , op : m -> m -> m
                 }
-
-type Semigroup g = { op : g -> g -> g }
-
--- | Monoidal Folds
-{-| Generalizes tons of common functions:
-
-sum : [number] -> number
-sum = fold sumM
-
-product : [number] -> number
-product = fold prodM
-
-and : [Bool] -> Bool
-and = fold allM
-
-or : [Bool] -> Bool
-or = fold anyM
-
-join : [[a]] -> [a]
-join = fold listM
-
-unions : [Set comparable] -> Set comparable
-unions = fold setM
-
-hashUnions : [Dict comparable v] -> Dict comparable v
-hashUnions = fold dictM
-
-combine : [Signal a] -> Signal [a]
-combine = fold (sigM listM)
-
-If you write a new data structure and you want to implement a function
-that looks like the above functions, see if it's a monoid and you
-might just get the implementation for free!
-
--}
-fold : Monoid m -> [m] -> m
-fold m xs = foldMap m xs id
-
-{-| A more general version of fold that's more common in  
-
-    If elm gets kinds this could be generalized further.
--}
-foldMap : Monoid m -> [a] -> (a -> m) -> m
-foldMap m xs f = let e    = m.id
-                     (<>) = m.op
-                 in foldr (\x m -> f x <> m) e xs
 
 -- | Instances                
 -- Monomorphic
@@ -104,17 +60,17 @@ dictM = { id = Dict.empty
         }
 
 firstM : Monoid (Maybe a)
-firstM = semiM { op x y = x }
+firstM = semiM firstSG
 
 lastM : Monoid (Maybe a)
-lastM = semiM { op x y = y }
+lastM = semiM lastSG
 
 -- | Bounded Polymorphic
 maxM : Monoid (Maybe comparable)
-maxM = semiM { op = max }
+maxM = semiM maxSG
 
 minM : Monoid (Maybe comparable)
-minM = semiM { op = min }
+minM = semiM minSG
 
 setM : Monoid (Set.Set comparable)
 setM = { id = Set.empty
