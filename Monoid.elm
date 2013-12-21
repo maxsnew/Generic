@@ -2,6 +2,7 @@ module Monoid where
 
 import open Semigroup
 
+import Graphics.Element as Element
 import Dict
 import String
 import Set
@@ -42,6 +43,33 @@ prodM : Monoid number
 prodM = { id = 1
         , op = (*)
         }
+
+-- Lexicographic Ordering
+ordM : Monoid Order
+ordM = { id = EQ
+       , op o1 o2 = case o1 of
+         EQ -> o2
+         _  -> o1
+       }
+
+-- Remove if this gets added to the stdlib
+emptyEl : Element.Element
+emptyEl = Element.spacer 0 0 
+
+aboveM : Monoid Element.Element
+aboveM = { id = emptyEl
+         , op = above
+         }
+
+besideM : Monoid Element.Element
+besideM = { id = emptyEl
+          , op = beside
+          }
+
+outwardM : Monoid Element.Element
+outwardM = { id = emptyEl
+           , op e1 e2 = Element.layers [e1, e2]
+           }
 
 -- | Polymorphic
 transM : Monoid (a -> a)
