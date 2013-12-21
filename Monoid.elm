@@ -66,10 +66,10 @@ besideM = { id = emptyEl
           , op = beside
           }
 
-outwardM : Monoid Element.Element
-outwardM = { id = emptyEl
-           , op e1 e2 = Element.layers [e1, e2]
-           }
+behindM : Monoid Element.Element
+behindM = { id = emptyEl
+          , op e1 e2 = Element.layers [e1, e2]
+          }
 
 -- | Polymorphic
 transM : Monoid (a -> a)
