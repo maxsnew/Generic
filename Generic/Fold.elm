@@ -1,7 +1,7 @@
 module Generic.Fold where
 
-import open Monoid
-import open Semigroup
+import open Generic.Monoid
+import open Generic.Semigroup
 
 -- | Monoidal Folds
 {-| Generalizes tons of common functions:

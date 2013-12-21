@@ -1,6 +1,6 @@
 module Generic.Monoid where
 
-import open Semigroup
+import open Generic.Semigroup
 
 import Graphics.Element as Element
 import Dict
