@@ -1,4 +1,4 @@
-module Fold where
+module Generic.Fold where
 
 import open Monoid
 import open Semigroup

@@ -1,4 +1,4 @@
-module Monoid where
+module Generic.Monoid where
 
 import open Semigroup
 
