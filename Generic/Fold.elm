@@ -42,17 +42,34 @@ don't even need to depend on this library to do so, because
 Monoids/Semigroups are just records!
 
 -}
-fold : Monoid m -> [m] -> m
+fold : Monoid r m -> [m] -> m
 fold m = foldMap m id
 
-{-| A more general version of fold that's more common in  
+{-| A more general version of fold that's more common in specific uses.
 
-    If elm gets kinds this could be generalized further.
+    If elm gets kinds this could be generalized over things besides
+    lists.
+
 -}
-foldMap : Monoid m -> (a -> m) -> [a] -> m
+foldMap : Monoid r m -> (a -> m) -> [a] -> m
 foldMap m f = let e    = m.id
                   (<>) = m.op
               in foldr (\x m -> f x <> m) e
+
+{-| Accumulates the values of a Signal using a monoid.
+    
+    count : Signal a -> Signal Int    
+    count = accumWith sumM (\_ -> 1)
+
+    countIf : (a -> Bool) -> Signal a -> Signal Int
+    countIf p = accumWith sumM (\x -> if p x then 1 else 0)
+
+    remember : Signal a -> Signal [a]
+    remember = accumWith listM (\x -> [x])
+
+-}
+accumWith : Monoid r m -> (a -> m) -> Signal a -> Signal m
+accumWith m f = foldp (m.op . f) m.id
 
 -- | Semigroupie Folds
 {-| Generalizes some other useful functions:
@@ -68,9 +85,12 @@ head = fold1 firstSG
 last : [a] -> a
 last = fold1 lastSG
 
+merges : [Signal a] -> Signal a
+merges = fold1 sigSG
+
 -}
-fold1 : Semigroup s -> [s] -> s
+fold1 : Semigroup r s -> [s] -> s
 fold1 s = foldMap1 s id
 
-foldMap1 : Semigroup s -> (a -> s) -> [a] -> s
+foldMap1 : Semigroup r s -> (a -> s) -> [a] -> s
 foldMap1 s f = foldr1 s.op . map f
