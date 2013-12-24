@@ -8,9 +8,7 @@ import String
 import Set
 
 -- Monoid laws:
-type Monoid r m = { r | id : m
-                      , op : m -> m -> m
-                  }
+type Monoid r m = Semigroup { r | id : m } m
 
 -- | Instances                
 -- Monomorphic
