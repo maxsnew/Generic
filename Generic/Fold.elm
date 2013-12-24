@@ -1,48 +1,48 @@
 module Generic.Fold where
 
-import open Generic.AppendableWithEmpty
+import open Generic.Combinable
 import open Generic.Appendable
 
--- | AppendableWithEmptyal Folds
+-- | Appendable Folds
 {-| Generalizes tons of common functions:
 
 sum : [number] -> number
-sum = fold sumAppE
+sum = fold App.sum
 
 product : [number] -> number
-product = fold prodAppE
+product = fold App.prod
 
 and : [Bool] -> Bool
-and = fold allAppE
+and = fold App.all
 
 or : [Bool] -> Bool
-or = fold anyAppE
+or = fold App.any
 
 flow dir     : [Element] -> Element
-flow down    = fold aboveAppE
-flow right   = fold besideAppE
-flow outward = fold behindAppE
+flow down    = fold App.above
+flow right   = fold App.beside
+flow outward = fold App.behind
 
 unions : [Set comparable] -> Set comparable
-unions = fold setAppE
+unions = fold App.set
 
 hashUnions : [Dict comparable v] -> Dict comparable v
-hashUnions = fold dictAppE
+hashUnions = fold App.dict
 
 combine : [Signal a] -> Signal [a]
-combine = fold (sigAppE listAppE)
+combine = fold (App.sig App.list)
 
 If you write a new data structure and you want to implement a function
-that looks like the above functions, see if it's a monoid and you
+that looks like the above functions, see if it's an Appendable and you
 might just get the implementation for free!
 
-Also, if your data structure has a natural fold operation, consider
-implementing foldMap with your corresponding type instead of []. You
-don't even need to depend on this library to do so, because
-AppendableWithEmptys/Appendables are just records!
+Also, if your data structure has a polymorphic container type,
+consider implementing foldMap with your corresponding type instead of
+[]. You don't even need to depend on this library to do so, because
+Appendable and Combinable are just records!
 
 -}
-fold : AppendableWithEmpty r m -> [m] -> m
+fold : Appendable r m -> [m] -> m
 fold m = foldMap m id
 
 {-| A more general version of fold that's more common in specific uses.
@@ -51,8 +51,8 @@ fold m = foldMap m id
     lists.
 
 -}
-foldMap : AppendableWithEmpty r m -> (a -> m) -> [a] -> m
-foldMap app f = foldr (\x a -> app.append (f x) a) app.empty
+foldMap : Appendable r m -> (a -> m) -> [a] -> m
+foldMap app f = foldr (\x a -> app.op (f x) a) app.empty
 
 {-| Accumulates the values of a Signal using a monoid.
     
@@ -66,29 +66,29 @@ foldMap app f = foldr (\x a -> app.append (f x) a) app.empty
     remember = accumWith listAppE (\x -> [x])
 
 -}
-accumWith : AppendableWithEmpty r m -> (a -> m) -> Signal a -> Signal m
-accumWith a f = foldp (a.append . f) a.empty
+accumWith : Appendable r m -> (a -> m) -> Signal a -> Signal m
+accumWith a f = foldp (a.op . f) a.empty
 
--- | Appendableie Folds
+-- | Combinable Folds
 {-| Generalizes some other useful functions:
 maximum : [comparable] -> comparable
-maximum = fold1 maxApp
+maximum = fold1 Comb.max
 
 minimum : [comparable] -> comparable
-minimum = fold1 minApp
+minimum = fold1 Comb.min
 
 head : [a] -> a
-head = fold1 firstApp
+head = fold1 Comb.first
 
 last : [a] -> a
-last = fold1 lastApp
+last = fold1 Comb.last
 
 merges : [Signal a] -> Signal a
-merges = fold1 sigApp
+merges = fold1 Comb.sig
 
 -}
-fold1 : Appendable r s -> [s] -> s
-fold1 s = foldMap1 s id
+fold1 : Combinable r s -> [s] -> s
+fold1 c = foldMap1 c id
 
-foldMap1 : Appendable r s -> (a -> s) -> [a] -> s
-foldMap1 s f = foldr1 s.append . map f
+foldMap1 : Combinable r s -> (a -> s) -> [a] -> s
+foldMap1 c f = foldr1 c.op . map f

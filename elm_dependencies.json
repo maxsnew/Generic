@@ -7,7 +7,7 @@
 , "exposed-modules":
       [ "Generic.Fold"
       , "Generic.Appendable"
-      , "Generic.AppendableWithEmpty"
+      , "Generic.Combinable"
       ]
 , "elm-version": "0.10.0.2"
 , "dependencies": {}
