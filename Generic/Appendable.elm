@@ -3,19 +3,19 @@ module Generic.Appendable where
 {-| AppendableWithEmptys that don't have an empty element -}
 type Appendable r g = { r | op : g -> g -> g }
 
-firstSG : Appendable {} a
-firstSG = { op x y = x }
+firstApp : Appendable {} a
+firstApp = { op x y = x }
 
-lastSG : Appendable {} a
-lastSG = { op x y = y }
+lastApp : Appendable {} a
+lastApp = { op x y = y }
 
-maxSG : Appendable {} comparable
-maxSG = { op = max }
+maxApp : Appendable {} comparable
+maxApp = { op = max }
 
-minSG : Appendable {} comparable
-minSG = { op = min }
+minApp : Appendable {} comparable
+minApp = { op = min }
 
-sigSG : Appendable {} (Signal a)
-sigSG = { op = merge }
+sigApp : Appendable {} (Signal a)
+sigApp = { op = merge }
 
 
