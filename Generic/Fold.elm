@@ -1,9 +1,9 @@
 module Generic.Fold where
 
-import open Generic.Monoid
-import open Generic.Semigroup
+import open Generic.AppendableWithEmpty
+import open Generic.Appendable
 
--- | Monoidal Folds
+-- | AppendableWithEmptyal Folds
 {-| Generalizes tons of common functions:
 
 sum : [number] -> number
@@ -39,10 +39,10 @@ might just get the implementation for free!
 Also, if your data structure has a natural fold operation, consider
 implementing foldMap with your corresponding type instead of []. You
 don't even need to depend on this library to do so, because
-Monoids/Semigroups are just records!
+AppendableWithEmptys/Appendables are just records!
 
 -}
-fold : Monoid r m -> [m] -> m
+fold : AppendableWithEmpty r m -> [m] -> m
 fold m = foldMap m id
 
 {-| A more general version of fold that's more common in specific uses.
@@ -51,7 +51,7 @@ fold m = foldMap m id
     lists.
 
 -}
-foldMap : Monoid r m -> (a -> m) -> [a] -> m
+foldMap : AppendableWithEmpty r m -> (a -> m) -> [a] -> m
 foldMap m f = let e    = m.id
                   (<>) = m.op
               in foldr (\x m -> f x <> m) e
@@ -68,10 +68,10 @@ foldMap m f = let e    = m.id
     remember = accumWith listM (\x -> [x])
 
 -}
-accumWith : Monoid r m -> (a -> m) -> Signal a -> Signal m
+accumWith : AppendableWithEmpty r m -> (a -> m) -> Signal a -> Signal m
 accumWith m f = foldp (m.op . f) m.id
 
--- | Semigroupie Folds
+-- | Appendableie Folds
 {-| Generalizes some other useful functions:
 maximum : [comparable] -> comparable
 maximum = fold1 maxSG
@@ -89,8 +89,8 @@ merges : [Signal a] -> Signal a
 merges = fold1 sigSG
 
 -}
-fold1 : Semigroup r s -> [s] -> s
+fold1 : Appendable r s -> [s] -> s
 fold1 s = foldMap1 s id
 
-foldMap1 : Semigroup r s -> (a -> s) -> [a] -> s
+foldMap1 : Appendable r s -> (a -> s) -> [a] -> s
 foldMap1 s f = foldr1 s.op . map f

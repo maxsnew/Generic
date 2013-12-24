@@ -6,8 +6,8 @@
 , "repository": "http://github.com/maxsnew/Generic.git"
 , "exposed-modules":
       [ "Generic.Fold"
-      , "Generic.Monoid"
-      , "Generic.Semigroup"
+      , "Generic.Appendable"
+      , "Generic.AppendableWithEmpty"
       ]
 , "elm-version": "0.10.0.2"
 , "dependencies": {}

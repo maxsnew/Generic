@@ -1,49 +1,49 @@
-module Generic.Monoid where
+module Generic.AppendableWithEmpty where
 
-import open Generic.Semigroup
+import open Generic.Appendable
 
 import Graphics.Element as Element
 import Dict
 import String
 import Set
 
--- Monoid laws:
-type Monoid r m = Semigroup { r | id : m } m
+-- AppendableWithEmpty laws:
+type AppendableWithEmpty r m = Appendable { r | id : m } m
 
 -- | Instances                
 -- Monomorphic
-unitM : Monoid {} ()
+unitM : AppendableWithEmpty {} ()
 unitM = { id       = ()
         , op () () = ()
         }
 
-anyM : Monoid {} Bool
+anyM : AppendableWithEmpty {} Bool
 anyM = { id = False
        , op = (||)
        }
 
-allM : Monoid {} Bool
+allM : AppendableWithEmpty {} Bool
 allM = { id = True
        , op = (&&)
        }
 
-stringM : Monoid {} String
+stringM : AppendableWithEmpty {} String
 stringM = { id = ""
           , op = String.append
           }
 
-sumM : Monoid {} number
+sumM : AppendableWithEmpty {} number
 sumM = { id = 0
        , op = (+)
        }
 
-prodM : Monoid {} number
+prodM : AppendableWithEmpty {} number
 prodM = { id = 1
         , op = (*)
         }
 
 -- Lexicographic Ordering
-ordM : Monoid {} Order
+ordM : AppendableWithEmpty {} Order
 ordM = { id = EQ
        , op o1 o2 = case o1 of
          EQ -> o2
@@ -54,67 +54,67 @@ ordM = { id = EQ
 emptyEl : Element.Element
 emptyEl = Element.spacer 0 0 
 
-aboveM : Monoid {} Element.Element
+aboveM : AppendableWithEmpty {} Element.Element
 aboveM = { id = emptyEl
          , op = above
          }
 
-besideM : Monoid {} Element.Element
+besideM : AppendableWithEmpty {} Element.Element
 besideM = { id = emptyEl
           , op = beside
           }
 
-behindM : Monoid {} Element.Element
+behindM : AppendableWithEmpty {} Element.Element
 behindM = { id = emptyEl
           , op e1 e2 = Element.layers [e1, e2]
           }
 
 -- | Polymorphic
-transM : Monoid {} (a -> a)
+transM : AppendableWithEmpty {} (a -> a)
 transM = { id = id
          , op = (.)
          }
 
-listM : Monoid {} [a]
+listM : AppendableWithEmpty {} [a]
 listM = { id = []
         , op = (++)
         }
 
-dictM : Monoid {} (Dict.Dict comparable a)
+dictM : AppendableWithEmpty {} (Dict.Dict comparable a)
 dictM = { id = Dict.empty
         , op = Dict.union
         }
 
-firstM : Monoid {} (Maybe a)
+firstM : AppendableWithEmpty {} (Maybe a)
 firstM = semiM firstSG
 
-lastM : Monoid {} (Maybe a)
+lastM : AppendableWithEmpty {} (Maybe a)
 lastM = semiM lastSG
 
 -- | Bounded Polymorphic
-maxM : Monoid {} (Maybe comparable)
+maxM : AppendableWithEmpty {} (Maybe comparable)
 maxM = semiM maxSG
 
-minM : Monoid {} (Maybe comparable)
+minM : AppendableWithEmpty {} (Maybe comparable)
 minM = semiM minSG
 
-setM : Monoid {} (Set.Set comparable)
+setM : AppendableWithEmpty {} (Set.Set comparable)
 setM = { id = Set.empty
        , op = Set.union
        }
 
-pairM : Monoid r1 a -> Monoid r2 b -> Monoid {} (a, b)
+pairM : AppendableWithEmpty r1 a -> AppendableWithEmpty r2 b -> AppendableWithEmpty {} (a, b)
 pairM m1 m2 = let op (x1, y1) (x2, y2) = (m1.op x1 x2, m2.op y1 y2) in
   { id   = (m1.id, m2.id)
   , op = op
   }
 
-sigM : Monoid r a -> Monoid {} (Signal a)
+sigM : AppendableWithEmpty r a -> AppendableWithEmpty {} (Signal a)
 sigM m = { id = constant m.id
          , op = \s1 s2 -> m.op <~ s1 ~ s2
          }
 
-semiM : Semigroup r g -> Monoid {} (Maybe g)
+semiM : Appendable r g -> AppendableWithEmpty {} (Maybe g)
 semiM g = { id = Nothing 
           , op x y = case (x, y) of
             (Nothing, _) -> y
