@@ -60,6 +60,9 @@ above = { empty  = emptyEl
         , append = Element.above
         }
 
+below : AppendableWithEmpty {} Element.Element
+below = Appendable.flip above
+
 beside : AppendableWithEmpty {} Element.Element
 beside = { empty  = emptyEl
          , append = Element.beside
@@ -69,6 +72,9 @@ behind : AppendableWithEmpty {} Element.Element
 behind = { empty = emptyEl
          , append e1 e2 = Element.layers [e1, e2]
          }
+
+inFront : AppendableWithEmpty {} Element.Element
+inFront = Appendable.flip behind
 
 -- | Polymorphic
 trans : AppendableWithEmpty {} (a -> a)
@@ -112,8 +118,8 @@ pair m1 m2 = let append (x1, y1) (x2, y2) = (m1.append x1 x2, m2.append y1 y2) i
 
 sig : AppendableWithEmpty r a -> AppendableWithEmpty {} (Signal a)
 sig m = { empty = constant m.empty
-            , append = \s1 s2 -> m.append <~ s1 ~ s2
-            }
+        , append = \s1 s2 -> m.append <~ s1 ~ s2
+        }
 
 addEmpty : Appendable r a -> AppendableWithEmpty {} (Maybe a)
 addEmpty a = { empty = Nothing 
