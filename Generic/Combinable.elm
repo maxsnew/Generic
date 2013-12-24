@@ -1,6 +1,10 @@
 module Generic.Combinable where
 
 import Basics
+import Set
+import open Set
+import Dict
+import open Dict
 
 {-| A type that has an associative operation for combining values 
   
@@ -22,6 +26,12 @@ max = { op = Basics.max }
 
 min : Combinable {} comparable
 min = { op = Basics.min }
+
+dictInter : Combinabale {} (Dict comparable a)
+dictInter = { op = Dict.intersect }
+
+setInter : Combinable {} (Set comparable)
+setInter = { op = Set.intersect }
 
 sig : Combinable {} (Signal a)
 sig = { op = merge }
