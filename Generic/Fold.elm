@@ -52,9 +52,7 @@ fold m = foldMap m id
 
 -}
 foldMap : AppendableWithEmpty r m -> (a -> m) -> [a] -> m
-foldMap m f = let e    = m.id
-                  (<>) = m.op
-              in foldr (\x m -> f x <> m) e
+foldMap app f = foldr (\x a -> app.append (f x) a) app.empty
 
 {-| Accumulates the values of a Signal using a monoid.
     
@@ -69,7 +67,7 @@ foldMap m f = let e    = m.id
 
 -}
 accumWith : AppendableWithEmpty r m -> (a -> m) -> Signal a -> Signal m
-accumWith m f = foldp (m.op . f) m.id
+accumWith a f = foldp (a.append . f) a.empty
 
 -- | Appendableie Folds
 {-| Generalizes some other useful functions:
@@ -93,4 +91,4 @@ fold1 : Appendable r s -> [s] -> s
 fold1 s = foldMap1 s id
 
 foldMap1 : Appendable r s -> (a -> s) -> [a] -> s
-foldMap1 s f = foldr1 s.op . map f
+foldMap1 s f = foldr1 s.append . map f
