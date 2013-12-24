@@ -1,21 +1,23 @@
 module Generic.Appendable where
 
+import Basics
+
 {-| AppendableWithEmptys that don't have an empty element -}
-type Appendable r g = { r | append : g -> g -> g }
+type Appendable r a = { r | append : a -> a -> a }
 
-firstApp : Appendable {} a
-firstApp = { append x y = x }
+first : Appendable {} a
+first = { append x y = x }
 
-lastApp : Appendable {} a
-lastApp = { append x y = y }
+last : Appendable {} a
+last = { append x y = y }
 
-maxApp : Appendable {} comparable
-maxApp = { append = max }
+max : Appendable {} comparable
+max = { append = Basics.max }
 
-minApp : Appendable {} comparable
-minApp = { append = min }
+min : Appendable {} comparable
+min = { append = Basics.min }
 
-sigApp : Appendable {} (Signal a)
-sigApp = { append = merge }
+sig : Appendable {} (Signal a)
+sig = { append = merge }
 
 
