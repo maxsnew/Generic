@@ -52,7 +52,9 @@ fold m = foldMap m id
 
 -}
 foldMap : Appendable r m -> (a -> m) -> [a] -> m
-foldMap app f = foldr (\x a -> app.op (f x) a) app.empty
+foldMap app f xs = case xs of 
+  [] -> app.empty
+  _  -> foldMap1 app f xs
 
 {-| Accumulates the values of a Signal using a monoid.
     
@@ -91,4 +93,10 @@ fold1 : Combinable r s -> [s] -> s
 fold1 c = foldMap1 c id
 
 foldMap1 : Combinable r s -> (a -> s) -> [a] -> s
-foldMap1 c f = foldr1 c.op . map f
+foldMap1 c f = let mergeAll xs = case xs of
+                     (x :: y :: ys) -> mergeAll (c.op x y :: mergeAll ys)
+                     _              -> xs
+                   pass1 xs = case xs of
+                     (x :: y :: ys) -> mergeAll (c.op (f x) (f y) :: pass1 ys)
+                     _              -> mergeAll . map f <| xs
+               in head . pass1

@@ -27,7 +27,7 @@ max = { op = Basics.max }
 min : Combinable {} comparable
 min = { op = Basics.min }
 
-dictInter : Combinabale {} (Dict comparable a)
+dictInter : Combinable {} (Dict comparable a)
 dictInter = { op = Dict.intersect }
 
 setInter : Combinable {} (Set comparable)
