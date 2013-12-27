@@ -1,10 +1,31 @@
 module Generic.Fold where
 
+{-| The payoff for all of these `Combinable`s and `Appendable`s: Generic Folds!
+
+# Appendable Folds
+@docs fold, foldMap, accumWith
+
+# Combinable Folds
+@docs fold1, foldMap1
+-}
+
 import open Generic.Combinable
 import open Generic.Appendable
 
--- | Appendable Folds
-{-| Generalizes tons of common functions:
+{-| A generic fold over a list, using an `Appendable` operation to
+    combine and the empty element for an empty list.
+
+    The implementation is equivalent to the following but uses the
+    `Appendable` rules to minimize the calls to `a.op`:
+
+```haskell
+fold a [x,y,...,z,] = a.op x (a.op y  ... (a.op z a.empty) ...)
+```
+
+    This generalizes tons of common functions:
+
+```haskell
+import Generic.Appendable as App
 
 sum : [number] -> number
 sum = fold App.sum
@@ -13,10 +34,10 @@ product : [number] -> number
 product = fold App.prod
 
 and : [Bool] -> Bool
-and = fold App.all
+and = fold App.and
 
 or : [Bool] -> Bool
-or = fold App.any
+or = fold App.or
 
 flow dir     : [Element] -> Element
 flow down    = fold App.above
@@ -36,11 +57,6 @@ If you write a new data structure and you want to implement a function
 that looks like the above functions, see if it's an Appendable and you
 might just get the implementation for free!
 
-Also, if your data structure has a polymorphic container type,
-consider implementing foldMap with your corresponding type instead of
-[]. You don't even need to depend on this library to do so, because
-Appendable and Combinable are just records!
-
 -}
 fold : Appendable r m -> [m] -> m
 fold m = foldMap m id
@@ -48,31 +64,37 @@ fold m = foldMap m id
 {-| A more general version of fold that's more common in specific uses.
 
     If elm gets kinds this could be generalized over things besides
-    lists.
-
+    lists. For now if you have a data structure that's a polymorphic
+    container type, consider implementing foldMap with your corresponding
+    type instead of [].
 -}
 foldMap : Appendable r m -> (a -> m) -> [a] -> m
 foldMap app f xs = case xs of 
   [] -> app.empty
   _  -> foldMap1 app f xs
 
-{-| Accumulates the values of a Signal using a monoid.
+{-| Accumulates the values of a Signal using an `Appendable`.
     
-    count : Signal a -> Signal Int    
-    count = accumWith sumAppE (\_ -> 1)
+```haskell
+count : Signal a -> Signal Int    
+count = accumWith sumAppE (\_ -> 1)
 
-    countIf : (a -> Bool) -> Signal a -> Signal Int
-    countIf p = accumWith sumAppE (\x -> if p x then 1 else 0)
-
-    remember : Signal a -> Signal [a]
-    remember = accumWith listAppE (\x -> [x])
-
+countIf : (a -> Bool) -> Signal a -> Signal Int
+countIf p = accumWith sumAppE (\x -> if p x then 1 else 0)
+    
+remember : Signal a -> Signal [a]  
+remember = accumWith listAppE (\x -> [x])
+```
 -}
 accumWith : Appendable r m -> (a -> m) -> Signal a -> Signal m
 accumWith a f = foldp (a.op . f) a.empty
 
--- | Combinable Folds
-{-| Generalizes some other useful functions:
+{-| Fold over a non-empty list combining with a Combinable.
+
+Generalizes some other useful functions:
+
+```haskell
+import Combinable as Comb
 maximum : [comparable] -> comparable
 maximum = fold1 Comb.max
 
@@ -87,11 +109,12 @@ last = fold1 Comb.last
 
 merges : [Signal a] -> Signal a
 merges = fold1 Comb.sig
-
+```
 -}
 fold1 : Combinable r s -> [s] -> s
 fold1 c = foldMap1 c id
 
+{-| foldMap for non-empty lists. -}
 foldMap1 : Combinable r s -> (a -> s) -> [a] -> s
 foldMap1 c f = let mergeAll xs = case xs of
                      (x :: y :: ys) -> mergeAll (c.op x y :: mergeAll ys)
