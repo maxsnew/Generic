@@ -1,7 +1,7 @@
 { "version": "0.1"
 , "summary": "Experimental library for Generic Programming using records"
 , "description":
-  "This is a library for experimenting with generic programming in Elm using Elm's powerful record system. The functions in Generic.Fold generalize many common functions. This library is intended to be lightweight and since Appendable/AppendableWithEmpty are defined as type aliases, you can define your own instances without using this library."
+  "This is a library for experimenting with generic programming in Elm using Elm's powerful record system. The functions in Generic.Fold generalize many common functions. This library is intended to be lightweight and since Appendable/Combinable are defined as type aliases, you can define your own instances without using this library."
 , "license": "BSD3"
 , "repository": "http://github.com/maxsnew/Generic.git"
 , "exposed-modules":
