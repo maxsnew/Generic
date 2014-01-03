@@ -104,13 +104,9 @@ ord = { empty = EQ
         _  -> o1
       }
 
--- Remove if this gets added to the stdlib
-emptyEl : Element.Element
-emptyEl = Element.spacer 0 0 
-
 {-| Place the first element above the second -}
 above : Appendable {} Element.Element
-above = { empty  = emptyEl
+above = { empty  = Element.empty
         , op = Element.above
         }
 
@@ -120,13 +116,13 @@ below = Combinable.flip above
 
 {-| Place the first element to the left of the second -}
 beside : Appendable {} Element.Element
-beside = { empty  = emptyEl
+beside = { empty  = Element.empty
          , op = Element.beside
          }
 
 {-| Place the first element behind the second -}
 behind : Appendable {} Element.Element
-behind = { empty = emptyEl
+behind = { empty = Element.empty
          , op e1 e2 = Element.layers [e1, e2]
          }
 
