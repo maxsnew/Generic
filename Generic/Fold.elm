@@ -52,6 +52,7 @@ hashUnions = fold App.dict
 
 combine : [Signal a] -> Signal [a]
 combine = fold (App.sig App.list)
+```
 
 If you write a new data structure and you want to implement a function
 that looks like the above functions, see if it's an Appendable and you
@@ -76,14 +77,16 @@ foldMap app f xs = case xs of
 {-| Accumulates the values of a Signal using an `Appendable`.
     
 ```haskell
+import Generic.Appendable as App
+
 count : Signal a -> Signal Int    
-count = accumWith sumAppE (\_ -> 1)
+count = accumWith Append.sum (\_ -> 1)
 
 countIf : (a -> Bool) -> Signal a -> Signal Int
-countIf p = accumWith sumAppE (\x -> if p x then 1 else 0)
+countIf p = accumWith Append.sum (\x -> if p x then 1 else 0)
     
 remember : Signal a -> Signal [a]  
-remember = accumWith listAppE (\x -> [x])
+remember = accumWith Append.list (\x -> [x])
 ```
 -}
 accumWith : Appendable r m -> (a -> m) -> Signal a -> Signal m
@@ -95,6 +98,7 @@ Generalizes some other useful functions:
 
 ```haskell
 import Combinable as Comb
+
 maximum : [comparable] -> comparable
 maximum = fold1 Comb.max
 
