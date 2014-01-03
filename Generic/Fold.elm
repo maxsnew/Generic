@@ -13,16 +13,16 @@ import open Generic.Combinable
 import open Generic.Appendable
 
 {-| A generic fold over a list, using an `Appendable` operation to
-    combine and the empty element for an empty list.
+combine and the empty element for an empty list.
 
-    The implementation is equivalent to the following but uses the
-    `Appendable` rules to minimize the calls to `a.op`:
+The implementation is equivalent to the following but uses the
+`Appendable` rules to minimize the calls to `a.op`:
 
 ```haskell
-fold a [x,y,...,z,] = a.op x (a.op y  ... (a.op z a.empty) ...)
+fold a [x,y,...,z] = a.op x (a.op y  ... (a.op z a.empty) ...)
 ```
 
-    This generalizes tons of common functions:
+This generalizes tons of common functions:
 
 ```haskell
 import Generic.Appendable as App
@@ -63,10 +63,10 @@ fold m = foldMap m id
 
 {-| A more general version of fold that's more common in specific uses.
 
-    If elm gets kinds this could be generalized over things besides
-    lists. For now if you have a data structure that's a polymorphic
-    container type, consider implementing foldMap with your corresponding
-    type instead of [].
+If elm gets kinds this could be generalized over things besides
+lists. For now if you have a data structure that's a polymorphic
+container type, consider implementing foldMap with your corresponding
+type instead of [].
 -}
 foldMap : Appendable r m -> (a -> m) -> [a] -> m
 foldMap app f xs = case xs of 

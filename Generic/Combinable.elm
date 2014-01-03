@@ -1,11 +1,13 @@
 module Generic.Combinable where
 
 {-| A `Combinable` is a type `a` with a "combining" operation `op : a -> a -> a`
-    that is associative.
+    that is associative, i.e.,
 
-```
+```haskell
 c.op x (c.op y z) = c.op (c.op x y) z
 ```
+
+This concept is known in mathematics as a `Semigroup`
 
 # Plain Record Type
 @docs Combinable
@@ -26,7 +28,7 @@ import open Set
 import Dict
 import open Dict
 
--- | A type with an associative operation.
+{-| A type with an associative operation. -}
 type Combinable r c = { r | op : c -> c -> c }
 
 {-| Take the first of two things

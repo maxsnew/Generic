@@ -1,10 +1,10 @@
 module Generic.Appendable where
 
 {-| An `Appendable` is a `Combinable` type `a` with an "empty" value
-    of that type `empty : a`, subject to some rules.
+of that type `empty : a`, subject to some rules.
 
-    When defining your own `Appendable` `a`, your definition should obey
-    the following rules:
+When defining your own `Appendable` `a`, your definition should obey
+the following rules:
 
 1. Identity: The `empty` element is the identity for the operation.
 ```haskell
@@ -15,8 +15,10 @@ a.op x a.empty == a.op a.empty x == x
 a.op x (a.op y z) == a.op (a.op x y) z
 ```
 
-    If you are writing a function that uses an `Appendable`, you may
-    be able to use the above rules to optimize your implementation.
+If you are writing a function that uses an `Appendable`, you may
+be able to use the above rules to optimize your implementation.
+
+This concept is known in mathematics as a `Monoid`.
 
 # Plain Record Type
 @docs Appendable
@@ -49,7 +51,7 @@ import String
 import Set
 
 {-| An `Appendable` is also a `Combinable` so it can be used with any function that 
-    works on `Combinable`s. 
+works on `Combinable`s. 
 -}
 type Appendable r a = Combinable { r | empty : a } a
 
@@ -93,7 +95,7 @@ prod = { empty  = 1
        }
 
 {-| Lexicographical ordering. If the first is LT (GT) the whole thing
-    is LT (GT), otherwise look at what the next ordering is. empty is EQ.  
+is LT (GT), otherwise look at what the next ordering is. empty is EQ.  
 -}
 ord : Appendable {} Order
 ord = { empty = EQ
