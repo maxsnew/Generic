@@ -1,4 +1,4 @@
-{ "version": "0.1"
+{ "version": "0.2"
 , "summary": "Experimental library for Generic Programming using records"
 , "description":
   "This is a library for experimenting with generic programming in Elm using Elm's powerful record system. The functions in Generic.Fold generalize many common functions. This library is intended to be lightweight and since Appendable/Combinable are defined as type aliases, you can define your own instances without using this library."
@@ -12,6 +12,6 @@
       , "Generic.Apply.Maybe"
       , "Generic.Workflow.Maybe"
       ]
-, "elm-version": "0.10.0.2"
+, "elm-version": "0.10.1"
 , "dependencies": {}
 }
