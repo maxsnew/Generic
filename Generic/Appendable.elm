@@ -48,10 +48,14 @@ import Dict
 import String
 import Set
 
-import Generic.Producer.List  as LP
-import Generic.Apply.List     as LA
-import Generic.Producer.Maybe as MP
-import Generic.Apply.Maybe    as MA
+import Generic.Producer.Environment  as EP
+import Generic.Apply.Environment     as EA
+import Generic.Producer.List         as LP
+import Generic.Apply.List            as LA
+import Generic.Producer.List         as LP
+import Generic.Apply.List            as LA
+import Generic.Producer.Maybe        as MP
+import Generic.Apply.Maybe           as MA
 
 {-| An `Appendable` is also a `Combinable` so it can be used with any function that 
     works on `Combinable`s. 
@@ -222,3 +226,8 @@ cartesian : Appendable r a -> Appendable {} [a]
 cartesian a = { empty = LA.pure a.empty
               , op xs ys = a.op `LP.map` xs `LA.ap` ys
               }
+
+env : Appendable r a -> Appendable {} (EP.Env e a)
+env a = { empty = EA.pure a.empty
+        , op xs ys = a.op `EP.map` xs `EA.ap` ys
+        }
