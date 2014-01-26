@@ -48,6 +48,8 @@ import Dict
 import String
 import Set
 
+import Generic.Producer.List  as LP
+import Generic.Apply.List     as LA
 import Generic.Producer.Maybe as MP
 import Generic.Apply.Maybe    as MA
 
@@ -212,7 +214,11 @@ sig m = { empty = constant m.empty
         }
 
 maybe : Appendable r a -> Appendable {} (Maybe a)
-maybe c = { empty = Just c.empty
-          , op m1 m2 = c.op `MP.map` m1 `MA.ap` m2
+maybe a = { empty = MA.pure a.empty
+          , op m1 m2 = a.op `MP.map` m1 `MA.ap` m2
           }
- 
+
+cartesian : Appendable r a -> Appendable {} [a]
+cartesian a = { empty = LA.pure a.empty
+              , op xs ys = a.op `LP.map` xs `LA.ap` ys
+              }
