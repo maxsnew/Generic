@@ -8,6 +8,9 @@
       [ "Generic.Fold"
       , "Generic.Appendable"
       , "Generic.Combinable"
+      , "Generic.Producer.Maybe"
+      , "Generic.Apply.Maybe"
+      , "Generic.Workflow.Maybe"
       ]
 , "elm-version": "0.10.0.2"
 , "dependencies": {}

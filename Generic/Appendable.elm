@@ -48,6 +48,9 @@ import Dict
 import String
 import Set
 
+import Generic.Producer.Maybe as MP
+import Generic.Apply.Maybe    as MA
+
 {-| An `Appendable` is also a `Combinable` so it can be used with any function that 
     works on `Combinable`s. 
 -}
@@ -192,12 +195,6 @@ pair m1 m2 = let op (x1, y1) (x2, y2) = (m1.op x1 x2, m2.op y1 y2) in
   , op = op
   }
 
-{-| Append the values of two signals of Appendables -}
-sig : Appendable r a -> Appendable {} (Signal a)
-sig m = { empty = constant m.empty
-        , op = \s1 s2 -> m.op <~ s1 ~ s2
-        }
-
 {-| Make any Combinable an Appendable by adding Nothing as the empty element. -}
 addEmpty : Combinable r a -> Appendable {} (Maybe a)
 addEmpty c = { empty = Nothing 
@@ -206,3 +203,16 @@ addEmpty c = { empty = Nothing
                (_, Nothing) -> x
                (Just x', Just y') -> Just (c.op x' y')
              }
+
+-- | Applicatives
+{-| Append the values of two signals of Appendables -}
+sig : Appendable r a -> Appendable {} (Signal a)
+sig m = { empty = constant m.empty
+        , op = \s1 s2 -> m.op <~ s1 ~ s2
+        }
+
+maybe : Appendable r a -> Appendable {} (Maybe a)
+maybe c = { empty = Just c.empty
+          , op m1 m2 = c.op `MP.map` m1 `MA.ap` m2
+          }
+ 
