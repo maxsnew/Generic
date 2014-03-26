@@ -1,6 +1,6 @@
 module Generic.Workflow.Maybe where
 
-import open Maybe
+import Maybe (..)
 
 bind : Maybe a -> (a -> Maybe b) -> Maybe b
 bind m k = case m of

@@ -24,9 +24,9 @@ This concept is known in mathematics as a `Semigroup`
 
 import Basics
 import Set
-import open Set
+import Set (..)
 import Dict
-import open Dict
+import Dict (..)
 
 {-| A type with an associative operation. -}
 type Combinable r c = { r | op : c -> c -> c }

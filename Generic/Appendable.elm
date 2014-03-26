@@ -42,7 +42,7 @@ This concept is known in mathematics as a `Monoid`.
 @docs addEmpty, first, last, max, min, maxDefault, minDefault
 -}
 
-import open Generic.Combinable
+import Generic.Combinable (..)
 import Generic.Combinable as Combinable
 
 import Graphics.Element as Element

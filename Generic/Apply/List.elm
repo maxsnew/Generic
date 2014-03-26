@@ -1,8 +1,8 @@
 module Generic.Apply.List where
 
 import List
-import open Generic.Producer.List
-import open Generic.Workflow.List
+import Generic.Producer.List (..)
+import Generic.Workflow.List (..)
 
 pure : a -> [a]
 pure x = [x]

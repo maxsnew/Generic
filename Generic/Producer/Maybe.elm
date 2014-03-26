@@ -1,6 +1,6 @@
 module Generic.Producer.Maybe where
 
-import open Maybe
+import Maybe (..)
 
 map : (a -> b) -> Maybe a -> Maybe b
 map f = maybe Nothing (Just . f) 

@@ -9,8 +9,8 @@ module Generic.Fold where
 @docs fold1, foldMap1
 -}
 
-import open Generic.Combinable
-import open Generic.Appendable
+import Generic.Combinable (..)
+import Generic.Appendable (..)
 
 {-| A generic fold over a list, using an `Appendable` operation to
 combine and the empty element for an empty list.

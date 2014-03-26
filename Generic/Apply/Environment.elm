@@ -1,6 +1,6 @@
 module Generic.Apply.Environment where
 
-import open Generic.Producer.Environment
+import Generic.Producer.Environment (..)
 
 pure : a -> Env e a
 pure x = \_ -> x

@@ -1,7 +1,7 @@
 module Generic.Apply.Maybe where
 
-import open Maybe
-import open Generic.Producer.Maybe
+import Maybe (..)
+import Generic.Producer.Maybe (..)
 
 pure : a -> Maybe a
 pure = Just
